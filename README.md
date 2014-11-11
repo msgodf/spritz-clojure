@@ -4,7 +4,7 @@ This is a Clojure port of [therealjamper's JavaScript implementation](https://gi
 
 The `hash`, `encrypt`, `decrypt`, `encrypt-with-iv`, and `decrypt-with-iv` high level functions are implemented.
 
-The functions are written to mimic their presentation in the original paper, as is the case with the JavaScript implementation.
+The functions are written to mimic their presentation in the [original paper](http://people.csail.mit.edu/rivest/pubs/RS14.pdf), as is the case with the JavaScript implementation.
 
 I still have a few things to work out about how best to manage the state of the cipher. At the moment most functions take the state and return a modified version (all of them are pure).
 

@@ -323,3 +323,29 @@
   (-> (key-setup K)
       (squeeze (count C))
       (subtract-from-stream C)))
+
+(defn encrypt-with-iv
+  "EncryptWithIV(K, IV, M)
+  1 KeySetup(K); AbsorbStop()
+  2 Absorb(IV)
+  3 C = M + Squeeze(M.length)
+  4 return C"
+  [K IV M]
+  (-> (key-setup K)
+      (absorb-stop)
+      (absorb IV)
+      (squeeze (count M))
+      (add-to-stream M)))
+
+(defn decrypt-with-iv
+  "DecryptWithIV(K, IV, C)
+  1 KeySetup(K); AbsorbStop()
+  2 Absorb(IV)
+  3 M = C - Squeeze(C.length)
+  4 return M"
+  [K IV C]
+  (-> (key-setup K)
+      (absorb-stop)
+      (absorb IV)
+      (squeeze (count C))
+      (subtract-from-stream C)))

@@ -134,7 +134,7 @@
        (fact "encrypt should not return the same message that went in"
              (spritz/encrypt [65 66 67] [68 69 70]) =not=> [68 69 70])
 
-       (fact "encrypt should return same result as the JavaScript implementation"
+       (fact "encrypt should return same the result as the JavaScript implementation"
              (spritz/encrypt [66 67 68] [1 2 3 4 5 6 7]) => [27 29 243 162 65 4 218])
 
        (fact "decrypt should return a plaintext M of the same length as the ciphertext C"
@@ -143,7 +143,7 @@
        (fact "decrypt should not return the same message that went in"
              (spritz/decrypt [65 66 67] [68 69 70]) =not=> [68 69 70])
 
-       (fact "decrypt should return same result as the JavaScript implementation"
+       (fact "decrypt should return same the result as the JavaScript implementation"
              (spritz/decrypt [66 67 68] [27 29 243 162 65 4 218]) => [1 2 3 4 5 6 7])
 
        (fact "decrypt(K, encrypt(K, M) should equal the original M"
@@ -154,4 +154,35 @@
        (fact "decrypt(K1, encrypt(K2, M) should not equal the original M"
              (->> [1 2 3 4 5 6 7]
                   (spritz/encrypt [66 67 68])
-                  (spritz/decrypt [66 67 70])) =not=> [1 2 3 4 5 6 7]))
+                  (spritz/decrypt [66 67 70])) =not=> [1 2 3 4 5 6 7])
+
+       (fact "encrypt-with-iv should return a ciphertext C of the same length as the plaintext M"
+             (spritz/encrypt-with-iv [65 66 67] [1 2 3] [68 69 70]) => (three-of number?))
+
+       (fact "encrypt-with-iv should not return the same message that went in"
+             (spritz/encrypt-with-iv [65 66 67] [1 2 3] [68 69 70]) =not=> [68 69 70])
+
+       (fact "encrypt-with-iv should not return the same ciphertext as encrypt (without IV)"
+             (spritz/encrypt-with-iv [65 66 67]
+                                     [1 2 3]
+                                     [68 69 70]) =not=> (spritz/encrypt [65 66 67] [68 69 70]))
+
+       (fact "encrypt-with-iv should return the same result as the JavaScript implementation"
+             (spritz/encrypt-with-iv [66 67 68]
+                                     [1 2 3]
+                                     [1 2 3 4 5 6 7]) => [30 186  207 41 27 253 188])
+
+       (fact "decrypt-with-iv(K, IV, encrypt-with-iv(K, IV, M) should equal the original M"
+             (->> [1 2 3 4 5 6 7]
+                  (spritz/encrypt-with-iv [1 2 3] [66 67 68])
+                  (spritz/decrypt-with-iv [1 2 3] [66 67 68])) => [1 2 3 4 5 6 7])
+
+       (fact "decrypt-with-iv(K, IV, encrypt(K, M) should not equal the original M"
+             (->> [1 2 3 4 5 6 7]
+                  (spritz/encrypt [66 67 68])
+                  (spritz/decrypt-with-iv [1 2 3] [66 67 70])) =not=> [1 2 3 4 5 6 7])
+
+       (fact "decrypt-with-iv should return the same result as the JavaScript implementation"
+             (spritz/decrypt-with-iv [66 67 68]
+                                     [1 2 3]
+                                     [30 186  207 41 27 253 188]) => [1 2 3 4 5 6 7]))

@@ -75,7 +75,7 @@
        (fact "whip works correctly after 'ABC' is absorbed"
              (-> (spritz/initialize-state)
                  (spritz/absorb [65 66 67])
-                 (spritz/whip spritz/*TWO_N*)) => (contains {:a 6
+                 (spritz/whip spritz/TWO_N)) => (contains {:a 6
                                                              :k 139
                                                              :i 0
                                                              :j 48

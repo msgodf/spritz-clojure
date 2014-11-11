@@ -38,17 +38,17 @@
 
 (def N 256)
 (def N_MINUS_ONE (- N 1))
-(def N_OVER_TWO_FLOOR (/ N 2))
+(def N_OVER_TWO_FLOOR (int (java.lang.Math/floor (/ N 2))))
 (def TWO_N (* 2 N))
 
 ;; implement utility functions first
 (defn madd
   [a b]
-  (mod (+ a b) *N*))
+  (mod (+ a b) N))
 
 (defn msub
   [a b]
-  (madd *N* (- a b)))
+  (madd N (- a b)))
 
 (defn low
   [b]
@@ -123,7 +123,7 @@
   ;; call update passing the result to itself, r times
   (let [state (nth (iterate update state) r)]
     (merge state
-           {:w (first (drop-while (fn [w] (not= (gcd w *N*) 1))
+           {:w (first (drop-while (fn [w] (not= (gcd w N) 1))
                                   (rest (iterate (fn [x] (madd x 1))
                                                  (:w state)))))})))
 
@@ -141,9 +141,9 @@
     3     Swap(S[v], S[N − 1 − v])"
   [{:keys [S] :as state}]
   (merge state
-         {:S (reduce (fn [s v] (crush* s v (- *N_MINUS_ONE* v)))
+         {:S (reduce (fn [s v] (crush* s v (- N_MINUS_ONE v)))
                       S
-                      (range 0 *N_OVER_TWO_FLOOR*))}))
+                      (range 0 N_OVER_TWO_FLOOR))}))
 
 
 ;; now that I have whip and crush, I can write shuffle
@@ -159,11 +159,11 @@
   [state]
   (merge state
          (-> state
-             (whip *TWO_N*)
+             (whip TWO_N)
              (crush)
-             (whip *TWO_N*)
+             (whip TWO_N)
              (crush)
-             (whip *TWO_N*))
+             (whip TWO_N))
          {:a 0}))
 
 ;; and with shuffle, I can write drip
@@ -214,7 +214,7 @@
    :z 0
    :a 0
    :w 1
-   :S (into [] (range *N*))})
+   :S (into [] (range N))})
 
 ;; before I can implement any of the higher level functions, I need to write the absorb functions
 
@@ -224,7 +224,7 @@
   (merge state
          {:S (swap (:S state)
                    (:a state)
-                   (madd *N_OVER_TWO_FLOOR* x))}))
+                   (madd N_OVER_TWO_FLOOR x))}))
 
 (defn inc-a
   "A helper function for absorb-nibble. Increments a mod N inside the state."
@@ -239,7 +239,7 @@
   4 a=a+1"
   [state x]
   (-> (if (== (:a state)
-              *N_OVER_TWO_FLOOR*) (shuffle state) state)
+              N_OVER_TWO_FLOOR) (shuffle state) state)
       (apply-swap x)
       (inc-a)))
 
@@ -266,7 +266,7 @@
     3 a=a+1"
   [state]
   (-> (if (== (:a state)
-              *N_OVER_TWO_FLOOR*) (shuffle state) state)
+              N_OVER_TWO_FLOOR) (shuffle state) state)
       (inc-a)))
 
 ;; Finally, this is enough to write hash

@@ -283,3 +283,43 @@
       (absorb-stop)
       (absorb [(bit-and r 0xff)])
       (squeeze r)))
+
+;; before I can write encrypt or decrypt, I need to implement key-setup
+
+(defn key-setup
+  "KeySetup(K)
+  1 InitializeState()
+  2 Absorb(K)"
+  [K]
+  (-> (initialize-state)
+      (absorb K)))
+
+(defn add-to-stream
+  [xs M]
+  (map-indexed (fn [i x] (madd (nth M i) x))
+               xs))
+
+(defn encrypt
+  "Encrypt(K, M)
+  1 KeySetup(K)
+  2 C = M + Squeeze(M.length)
+  3 return C"
+  [K M]
+  (-> (key-setup K)
+      (squeeze (count M))
+      (add-to-stream M)))
+
+(defn subtract-from-stream
+  [xs C]
+  (map-indexed (fn [i x] (msub (nth C i) x))
+               xs))
+
+(defn decrypt
+  "Decrypt(K , C)
+  1 KeySetup(K)
+  2 M = C − Squeeze(M.length)
+  3 return M"
+  [K C]
+  (-> (key-setup K)
+      (squeeze (count C))
+      (subtract-from-stream C)))

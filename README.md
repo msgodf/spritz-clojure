@@ -10,6 +10,8 @@ I still have a few things to work out about how best to manage the state of the 
 
 ## Usage
 
+All of these examples can be run from a Clojure REPL assuming that spritz-clojure has been `require`d with the alias `spritz` (i.e. with `(require '[spritz-clojure.core :as spritz])`).
+
 ```clojure
 (let [message (map byte "ABC")
       hash-length 32]
